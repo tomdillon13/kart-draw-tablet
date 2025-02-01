@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Random Number Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #333333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #e40521;
+            color: white;
+        }
+        #drawKartButton {
+            padding: 20px 40px; /* Increased padding to double the size */
+            font-size: 32px;   /* Increased font size to double */
+        }
+        #output, #listDisplay, #remainingCount, #drawnNumbersContainer {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        #listDisplay {
+            font-size: 18px;
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
+        #drawnNumbersContainer {
+            font-size: 18px;
+            color: white;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+            margin-top: 30px;
+        }
+        #logo {
+            display: block;
+            margin: 0 auto;
+            width: 25%;
+            height: auto;
+        }
+        #listInput {
+            width: 20%; /* Reduced width to 50% smaller */
+        }
+    </style>
+</head>
+<body>
+
+    <img id="logo" src="logo.png" alt="Logo">
+    <div id="output">Kart Number:</div>
+    <br><br>
+    <button id="drawKartButton" onclick="generateRandomNumber()">Draw Kart</button>
+    <br><br>
+
+    <div id="listDisplay">Your List:</div>
+
+    <div id="remainingCount">Karts left to draw:</div>
+    <div id="drawnNumbersContainer">Numbers Drawn So Far: <span id="drawnNumbers"></span></div>
+
+    <br>
+
+    <hr>
+    <br>
+    <input type="text" id="listInput" placeholder="Enter numbers separated by commas" size="20">
+    <br>
+    <button onclick="generateList()">Submit</button>
+    <button id="clearButton" onclick="clearAll()">Clear</button>
+
+    <script>
+        let numbersList = [];
+        let drawnNumbers = [];
+
+        function generateList() {
+            const inputValue = document.getElementById("listInput").value;
+            numbersList = inputValue.split(',').map(num => num.trim()).filter(num => num !== "");
+            drawnNumbers = [];
+
+            if (numbersList.length === 0) {
+                alert("Please enter a valid list of numbers.");
+                return;
+            }
+
+            document.getElementById("listDisplay").innerText = "Your List: " + numbersList.join(", ");
+            document.getElementById("output").innerText = 'Kart Number:';
+            document.getElementById("remainingCount").innerText = "Karts left to draw: " + numbersList.length;
+            document.getElementById("drawnNumbers").innerText = '';
+        }
+
+        function generateRandomNumber() {
+            if (numbersList.length === 0) {
+                alert("Please submit a list first.");
+                return;
+            }
+
+            let index = 0;
+            const totalCycles = 25;
+            const interval = 100;
+
+            const intervalId = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * numbersList.length);
+                document.getElementById("output").innerText = "Kart Number: " + numbersList[randomIndex];
+                index++;
+
+                if (index >= totalCycles) {
+                    clearInterval(intervalId);
+
+                    const finalIndex = Math.floor(Math.random() * numbersList.length);
+                    const finalNumber = numbersList[finalIndex];
+
+                    numbersList.splice(finalIndex, 1);
+                    drawnNumbers.push(finalNumber);
+
+                    document.getElementById("output").innerText = "Kart Number: " + finalNumber;
+                    document.getElementById("listDisplay").innerText = "Updated List: " + numbersList.join(", ");
+                    document.getElementById("remainingCount").innerText = "Karts left to draw: " + numbersList.length;
+                    document.getElementById("drawnNumbers").innerText = drawnNumbers.join(", ");
+
+                    if (numbersList.length === 0) {
+                        document.getElementById("remainingCount").innerText = "All karts have been drawn!";
+                        document.getElementById("output").innerText = "Kart Number: None (All karts drawn)";
+                    }
+                }
+            }, interval);
+        }
+
+        function clearAll() {
+            const password = prompt("Enter password to clear data:");
+            if (password === "Sandown2024") {
+                if (confirm("Are you sure you want to clear all data?")) {
+                    document.getElementById("listInput").value = '';
+                    document.getElementById("listDisplay").innerText = "Your List:";
+                    document.getElementById("output").innerText = "Kart Number:";
+                    document.getElementById("remainingCount").innerText = "Karts left to draw:";
+                    document.getElementById("drawnNumbers").innerText = '';
+                    numbersList = [];
+                    drawnNumbers = [];
+                }
+            } else {
+                alert("Incorrect password. Data not cleared.");
+            }
+        }
+
+        document.getElementById("listInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                generateList();
+            }
+        });
+    </script>
+
+</body>
+</html>
