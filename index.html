@@ -20,8 +20,8 @@
             color: white;
         }
         #drawKartButton {
-            padding: 20px 40px; /* Increased padding to double the size */
-            font-size: 32px;   /* Increased font size to double */
+            padding: 20px 40px;
+            font-size: 32px;
         }
         #output, #listDisplay, #remainingCount, #drawnNumbersContainer {
             margin-top: 20px;
@@ -48,7 +48,7 @@
             height: auto;
         }
         #listInput {
-            width: 20%; /* Reduced width to 50% smaller */
+            width: 20%;
         }
     </style>
 </head>
@@ -61,7 +61,6 @@
     <br><br>
 
     <div id="listDisplay">Your List:</div>
-
     <div id="remainingCount">Karts left to draw:</div>
     <div id="drawnNumbersContainer">Numbers Drawn So Far: <span id="drawnNumbers"></span></div>
 
@@ -73,25 +72,34 @@
     <br>
     <button onclick="generateList()">Submit</button>
     <button id="clearButton" onclick="clearAll()">Clear</button>
+    <br><br>
+    <label><input type="checkbox" id="drawTwoCheckbox"> Draw Two</label>
 
     <script>
         let numbersList = [];
+        let numbersList2 = [];
         let drawnNumbers = [];
+        let drawnNumbers2 = [];
 
         function generateList() {
             const inputValue = document.getElementById("listInput").value;
             numbersList = inputValue.split(',').map(num => num.trim()).filter(num => num !== "");
             drawnNumbers = [];
 
+            if (document.getElementById("drawTwoCheckbox").checked) {
+                numbersList2 = [...numbersList];
+                drawnNumbers2 = [];
+            } else {
+                numbersList2 = [];
+                drawnNumbers2 = [];
+            }
+
             if (numbersList.length === 0) {
                 alert("Please enter a valid list of numbers.");
                 return;
             }
 
-            document.getElementById("listDisplay").innerText = "Your List: " + numbersList.join(", ");
-            document.getElementById("output").innerText = 'Kart Number:';
-            document.getElementById("remainingCount").innerText = "Karts left to draw: " + numbersList.length;
-            document.getElementById("drawnNumbers").innerText = '';
+            updateDisplay();
         }
 
         function generateRandomNumber() {
@@ -100,35 +108,57 @@
                 return;
             }
 
-            let index = 0;
-            const totalCycles = 25;
-            const interval = 100;
+            const drawTwo = document.getElementById("drawTwoCheckbox").checked;
 
-            const intervalId = setInterval(() => {
-                const randomIndex = Math.floor(Math.random() * numbersList.length);
-                document.getElementById("output").innerText = "Kart Number: " + numbersList[randomIndex];
-                index++;
+            if (drawTwo && numbersList2.length === 0) {
+                alert("Second list is empty. Please submit a valid list.");
+                return;
+            }
 
-                if (index >= totalCycles) {
-                    clearInterval(intervalId);
+            animateDraw(drawTwo);
+        }
 
-                    const finalIndex = Math.floor(Math.random() * numbersList.length);
-                    const finalNumber = numbersList[finalIndex];
+        function animateDraw(drawTwo) {
+            const outputElement = document.getElementById("output");
+            let iterations = 0;
+            const maxIterations = 20;
 
-                    numbersList.splice(finalIndex, 1);
-                    drawnNumbers.push(finalNumber);
+            const interval = setInterval(() => {
+                const randomTemp1 = numbersList[Math.floor(Math.random() * numbersList.length)];
+                const randomTemp2 = drawTwo ? numbersList2[Math.floor(Math.random() * numbersList2.length)] : null;
+                outputElement.innerText = drawTwo ? `Kart Drawn: ${randomTemp1} & ${randomTemp2}` : `Kart Drawn: ${randomTemp1}`;
+                iterations++;
 
-                    document.getElementById("output").innerText = "Kart Number: " + finalNumber;
-                    document.getElementById("listDisplay").innerText = "Updated List: " + numbersList.join(", ");
-                    document.getElementById("remainingCount").innerText = "Karts left to draw: " + numbersList.length;
-                    document.getElementById("drawnNumbers").innerText = drawnNumbers.join(", ");
+                if (iterations >= maxIterations) {
+                    clearInterval(interval);
+                    const finalNumber1 = drawFromList(numbersList, drawnNumbers);
+                    const finalNumber2 = drawTwo ? drawFromList(numbersList2, drawnNumbers2) : null;
+                    outputElement.innerText = drawTwo ? `Kart Drawn: ${finalNumber1} & ${finalNumber2}` : `Kart Drawn: ${finalNumber1}`;
+                    updateDisplay();
 
-                    if (numbersList.length === 0) {
-                        document.getElementById("remainingCount").innerText = "All karts have been drawn!";
-                        document.getElementById("output").innerText = "Kart Number: None (All karts drawn)";
-                    }
                 }
-            }, interval);
+            }, 100);
+        }
+
+        function drawFromList(list, drawnList) {
+            const randomIndex = Math.floor(Math.random() * list.length);
+            const number = list[randomIndex];
+            list.splice(randomIndex, 1);
+            drawnList.push(number);
+            return number;
+        }
+
+        function updateDisplay() {
+            const drawTwo = document.getElementById("drawTwoCheckbox").checked;
+
+            document.getElementById("listDisplay").innerText = drawTwo ? `Updated List 1: ${numbersList.join(", ")}\nUpdated List 2: ${numbersList2.join(", ")}` : `Updated List: ${numbersList.join(", ")}`;
+            document.getElementById("remainingCount").innerText = drawTwo ? `Karts left to draw: List 1 - ${numbersList.length}, List 2 - ${numbersList2.length}` : `Karts left to draw: ${numbersList.length}`;
+            document.getElementById("drawnNumbers").innerText = drawTwo ? `List 1: ${drawnNumbers.join(", ")} | List 2: ${drawnNumbers2.join(", ")}` : `${drawnNumbers.join(", ")}`;
+
+            if (numbersList.length === 0 && (!drawTwo || numbersList2.length === 0)) {
+                document.getElementById("remainingCount").innerText = "All karts have been drawn!";
+                document.getElementById("output").innerText = "Kart Number: None (All karts drawn)";
+            }
         }
 
         function clearAll() {
@@ -141,7 +171,9 @@
                     document.getElementById("remainingCount").innerText = "Karts left to draw:";
                     document.getElementById("drawnNumbers").innerText = '';
                     numbersList = [];
+                    numbersList2 = [];
                     drawnNumbers = [];
+                    drawnNumbers2 = [];
                 }
             } else {
                 alert("Incorrect password. Data not cleared.");
