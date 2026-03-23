@@ -3,189 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Random Number Generator</title>
+    <title>Daytona Kart Draw</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
             background-color: #333333;
+            overflow-x: hidden;
+            color: white;
         }
+
         button {
             padding: 10px 20px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            background-color: #e40521;
+            border: none;
             color: white;
+            margin: 5px;
         }
-        #drawKartButton {
+
+        /* DRAW BUTTONS */
+        #drawSodiButton {
             padding: 20px 40px;
-            font-size: 32px;
+            font-size: 28px;
+            background-color: #007bff;
         }
+
+        #drawDmaxButton {
+            padding: 20px 40px;
+            font-size: 28px;
+            background-color: #e40521;
+        }
+
         #output, #listDisplay, #remainingCount, #drawnNumbersContainer {
             margin-top: 20px;
             font-size: 24px;
             font-weight: bold;
-            color: white;
         }
+
         #listDisplay {
             font-size: 18px;
             font-weight: normal;
-            margin-bottom: 20px;
         }
+
         #drawnNumbersContainer {
             font-size: 18px;
-            color: white;
             border-top: 1px solid #ccc;
             padding-top: 10px;
             margin-top: 30px;
         }
+
         #logo {
             display: block;
             margin: 0 auto;
             width: 35%;
-            height: auto;
         }
-        #listInput {
-            width: 20%;
+
+        #menuButton {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            font-size: 24px;
+            background: red;
+        }
+
+        /* SIDE MENU */
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100%;
+            background: #222;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        #sideMenu.open {
+            transform: translateX(0);
+        }
+
+        #closeMenuButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            color: white;
+            font-size: 22px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #sideInput {
+            width: 90%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 40px;
+        }
+
+        #sideList {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        #sideList li {
+            padding: 8px;
+            border-bottom: 1px solid #555;
+            cursor: pointer;
+        }
+
+        #sideList li:hover {
+            background: #444;
+        }
+
+        #clearButton {
+            margin-top: 20px;
+        }
+
+        #listTypeSelect {
+            width: 95%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* MAKE SIDE MENU BUTTONS RED */
+        #sideMenu button {
+            background-color: #e40521;
+            color: white;
         }
     </style>
 </head>
+
 <body>
 
-    <img id="logo" src="logo.png" alt="Logo">
-    <div id="output">Kart Number:</div>
-    <br><br>
-    <button id="drawKartButton" onclick="generateRandomNumber()">Draw Kart</button>
-    <br><br>
+<button id="menuButton" onclick="toggleMenu()">☰</button>
 
-    <div id="listDisplay">Your List:</div>
-    <div id="remainingCount">Karts left to draw:</div>
-    <div id="drawnNumbersContainer">Numbers Drawn So Far: <span id="drawnNumbers"></span></div>
+<div id="sideMenu">
+    <button id="closeMenuButton" onclick="toggleMenu()">✖</button>
+
+    <h2>Add Karts</h2>
+
+    <select id="listTypeSelect" onchange="switchListType()">
+        <option value="SODI">SODI</option>
+        <option value="DMAX">DMAX</option>
+    </select>
+
+    <input type="text" id="sideInput" placeholder="Enter kart number">
+
+    <ul id="sideList"></ul>
 
     <br>
+    <button onclick="applyList()">Use This List</button>
 
-    <hr>
     <br>
-    <input type="text" id="listInput" placeholder="Enter numbers separated by commas" size="20">
-    <br>
-    <button onclick="generateList()">Submit</button>
-    <button id="clearButton" onclick="clearAll()">Clear</button>
-    <br><br>
-    <label><input type="checkbox" id="drawTwoCheckbox"> Draw Two</label>
+    <button id="clearButton" onclick="clearAll()">Clear All</button>
+</div>
 
-    <script>
-        let numbersList = [];
-        let numbersList2 = [];
-        let drawnNumbers = [];
-        let drawnNumbers2 = [];
+<img id="logo" src="logo.png" alt="Logo">
 
-        function generateList() {
-            const inputValue = document.getElementById("listInput").value;
-            numbersList = inputValue.split(',').map(num => num.trim()).filter(num => num !== "");
-            drawnNumbers = [];
+<div id="output">Kart Number:</div>
 
-            if (document.getElementById("drawTwoCheckbox").checked) {
-                numbersList2 = [...numbersList];
-                drawnNumbers2 = [];
-            } else {
-                numbersList2 = [];
-                drawnNumbers2 = [];
-            }
+<br><br>
 
-            if (numbersList.length === 0) {
-                alert("Please enter a valid list of numbers.");
-                return;
-            }
+<button id="drawSodiButton" onclick="generateRandomNumber('SODI')">Draw SODI</button>
+<button id="drawDmaxButton" onclick="generateRandomNumber('DMAX')">Draw DMAX</button>
 
+<br><br>
+
+<div id="listDisplay">Your List:</div>
+<div id="remainingCount">Karts left to draw:</div>
+
+<div id="drawnNumbersContainer">
+    Numbers Drawn So Far: <span id="drawnNumbers"></span>
+</div>
+
+<script>
+let sodiList = [];
+let sodiDrawn = [];
+
+let dmaxList = [];
+let dmaxDrawn = [];
+
+let tempList = [];
+let currentType = "SODI";
+
+// TOGGLE MENU
+function toggleMenu() {
+    document.getElementById("sideMenu").classList.toggle("open");
+}
+
+// SWITCH LIST TYPE
+function switchListType() {
+    currentType = document.getElementById("listTypeSelect").value;
+    tempList = [];
+    updateSideList();
+}
+
+// ADD NUMBER ON ENTER
+document.getElementById("sideInput").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        const value = this.value.trim();
+        if (value === "") return;
+
+        if (tempList.includes(value)) {
+            alert("Kart already added!");
+            return;
+        }
+
+        tempList.push(value);
+        updateSideList();
+        this.value = "";
+        this.blur();
+    }
+});
+
+// UPDATE SIDE LIST
+function updateSideList() {
+    const list = document.getElementById("sideList");
+    list.innerHTML = "";
+
+    tempList.forEach((num, index) => {
+        const li = document.createElement("li");
+        li.textContent = num;
+
+        li.onclick = () => {
+            tempList.splice(index, 1);
+            updateSideList();
+        };
+
+        list.appendChild(li);
+    });
+}
+
+// APPLY LIST
+function applyList() {
+    if (tempList.length === 0) {
+        alert("Add at least one kart.");
+        return;
+    }
+
+    if (currentType === "SODI") {
+        sodiList = [...tempList];
+        sodiDrawn = [];
+    } else {
+        dmaxList = [...tempList];
+        dmaxDrawn = [];
+    }
+
+    updateDisplay();
+    toggleMenu();
+}
+
+// DRAW
+function generateRandomNumber(type) {
+    let list = type === "SODI" ? sodiList : dmaxList;
+    if (list.length === 0) {
+        alert(`No karts in ${type} list.`);
+        return;
+    }
+
+    animateDraw(type);
+}
+
+// ANIMATION
+function animateDraw(type) {
+    const outputElement = document.getElementById("output");
+    let iterations = 0;
+
+    let list = type === "SODI" ? sodiList : dmaxList;
+    let drawn = type === "SODI" ? sodiDrawn : dmaxDrawn;
+
+    const interval = setInterval(() => {
+        const temp = list[Math.floor(Math.random() * list.length)];
+        outputElement.innerText = `${type} Kart: ${temp}`;
+        iterations++;
+
+        if (iterations >= 20) {
+            clearInterval(interval);
+            const final = drawFromList(list, drawn);
+            outputElement.innerText = `${type} Kart: ${final}`;
             updateDisplay();
         }
+    }, 100);
+}
 
-        function generateRandomNumber() {
-            if (numbersList.length === 0) {
-                alert("Please submit a list first.");
-                return;
-            }
+// DRAW FROM LIST
+function drawFromList(list, drawnList) {
+    const index = Math.floor(Math.random() * list.length);
+    const number = list[index];
 
-            const drawTwo = document.getElementById("drawTwoCheckbox").checked;
+    list.splice(index, 1);
+    drawnList.push(number);
 
-            if (drawTwo && numbersList2.length === 0) {
-                alert("Second list is empty. Please submit a valid list.");
-                return;
-            }
+    return number;
+}
 
-            animateDraw(drawTwo);
+// UPDATE DISPLAY
+function updateDisplay() {
+    document.getElementById("listDisplay").innerText =
+        `SODI: ${sodiList.join(", ")} | DMAX: ${dmaxList.join(", ")}`;
+
+    document.getElementById("remainingCount").innerText =
+        `SODI Remaining: ${sodiList.length} | DMAX Remaining: ${dmaxList.length}`;
+
+    document.getElementById("drawnNumbers").innerText =
+        `SODI: ${sodiDrawn.join(", ")} | DMAX: ${dmaxDrawn.join(", ")}`;
+
+    if (sodiList.length === 0 && dmaxList.length === 0) {
+        document.getElementById("remainingCount").innerText = "All karts drawn!";
+        document.getElementById("output").innerText = "Kart Number: None";
+    }
+}
+
+// CLEAR
+function clearAll() {
+    const password = prompt("Enter password to clear data:");
+
+    if (password === "Sandown2024") {
+        if (confirm("Are you sure?")) {
+            sodiList = [];
+            sodiDrawn = [];
+            dmaxList = [];
+            dmaxDrawn = [];
+            tempList = [];
+
+            document.getElementById("sideList").innerHTML = "";
+            document.getElementById("output").innerText = "Kart Number:";
+            document.getElementById("listDisplay").innerText = "Your List:";
+            document.getElementById("remainingCount").innerText = "Karts left to draw:";
+            document.getElementById("drawnNumbers").innerText = "";
         }
-
-        function animateDraw(drawTwo) {
-            const outputElement = document.getElementById("output");
-            let iterations = 0;
-            const maxIterations = 20;
-
-            const interval = setInterval(() => {
-                const randomTemp1 = numbersList[Math.floor(Math.random() * numbersList.length)];
-                const randomTemp2 = drawTwo ? numbersList2[Math.floor(Math.random() * numbersList2.length)] : null;
-                outputElement.innerText = drawTwo ? `Kart Drawn: ${randomTemp1} & ${randomTemp2}` : `Kart Drawn: ${randomTemp1}`;
-                iterations++;
-
-                if (iterations >= maxIterations) {
-                    clearInterval(interval);
-                    const finalNumber1 = drawFromList(numbersList, drawnNumbers);
-                    const finalNumber2 = drawTwo ? drawFromList(numbersList2, drawnNumbers2) : null;
-                    outputElement.innerText = drawTwo ? `Kart Drawn: ${finalNumber1} & ${finalNumber2}` : `Kart Drawn: ${finalNumber1}`;
-                    updateDisplay();
-
-                }
-            }, 100);
-        }
-
-        function drawFromList(list, drawnList) {
-            const randomIndex = Math.floor(Math.random() * list.length);
-            const number = list[randomIndex];
-            list.splice(randomIndex, 1);
-            drawnList.push(number);
-            return number;
-        }
-
-        function updateDisplay() {
-            const drawTwo = document.getElementById("drawTwoCheckbox").checked;
-
-            document.getElementById("listDisplay").innerText = drawTwo ? `Updated List 1: ${numbersList.join(", ")}\nUpdated List 2: ${numbersList2.join(", ")}` : `Updated List: ${numbersList.join(", ")}`;
-            document.getElementById("remainingCount").innerText = drawTwo ? `Karts left to draw: List 1 - ${numbersList.length}, List 2 - ${numbersList2.length}` : `Karts left to draw: ${numbersList.length}`;
-            document.getElementById("drawnNumbers").innerText = drawTwo ? `List 1: ${drawnNumbers.join(", ")} | List 2: ${drawnNumbers2.join(", ")}` : `${drawnNumbers.join(", ")}`;
-
-            if (numbersList.length === 0 && (!drawTwo || numbersList2.length === 0)) {
-                document.getElementById("remainingCount").innerText = "All karts have been drawn!";
-                document.getElementById("output").innerText = "Kart Number: None (All karts drawn)";
-            }
-        }
-
-        function clearAll() {
-            const password = prompt("Enter password to clear data:");
-            if (password === "Sandown2024") {
-                if (confirm("Are you sure you want to clear all data?")) {
-                    document.getElementById("listInput").value = '';
-                    document.getElementById("listDisplay").innerText = "Your List:";
-                    document.getElementById("output").innerText = "Kart Number:";
-                    document.getElementById("remainingCount").innerText = "Karts left to draw:";
-                    document.getElementById("drawnNumbers").innerText = '';
-                    numbersList = [];
-                    numbersList2 = [];
-                    drawnNumbers = [];
-                    drawnNumbers2 = [];
-                }
-            } else {
-                alert("Incorrect password. Data not cleared.");
-            }
-        }
-
-        document.getElementById("listInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                generateList();
-            }
-        });
-    </script>
+    } else {
+        alert("Incorrect password.");
+    }
+}
+</script>
 
 </body>
 </html>
