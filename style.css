@@ -1,0 +1,134 @@
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #333333;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            color: white;
+            margin: 5px;
+        }
+
+        /* DRAW BUTTONS */
+        #drawSodiButton {
+            padding: 20px 40px;
+            font-size: 28px;
+            background-color: #007bff;
+        }
+
+        #drawDmaxButton {
+            padding: 20px 40px;
+            font-size: 28px;
+            background-color: #e40521;
+        }
+
+        #output, #listDisplay, #remainingCount, #drawnNumbersContainer {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #listDisplay {
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        #drawnNumbersContainer {
+            font-size: 18px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+            margin-top: 30px;
+        }
+
+        #logo {
+            display: block;
+            margin: 0 auto;
+            width: 35%;
+        }
+
+        #menuButton {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            font-size: 24px;
+            background: red;
+        }
+
+        /* SIDE MENU */
+        #sideMenu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100%;
+            background: #222;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        #sideMenu.open {
+            transform: translateX(0);
+        }
+
+        #closeMenuButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            color: white;
+            font-size: 22px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #sideInput {
+            width: 90%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 40px;
+        }
+
+        #sideList {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        #sideList li {
+            padding: 8px;
+            border-bottom: 1px solid #555;
+            cursor: pointer;
+        }
+
+        #sideList li:hover {
+            background: #444;
+        }
+
+        #clearButton {
+            margin-top: 20px;
+        }
+
+        #listTypeSelect {
+            width: 95%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* MAKE SIDE MENU BUTTONS RED */
+        #sideMenu button {
+            background-color: #e40521;
+            color: white;
+        }
