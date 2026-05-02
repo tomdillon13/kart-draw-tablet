@@ -101,7 +101,7 @@ function animateDraw(type) {
         if (iterations >= 20) {
             clearInterval(interval);
             const final = drawFromList(list, drawn);
-            outputElement.innerText = `${type} Kart: ${final}`;
+            outputElement.innerText = `Kart: ${final}`;
             updateDisplay();
         }
     }, 100);
