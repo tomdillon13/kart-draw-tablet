@@ -1,97 +1,89 @@
-let sodiList = [];
-let sodiDrawn = [];
+const kartLists = {
+    SODI_LIGHT: { list: [], drawn: [] },
+    SODI_HEAVY: { list: [], drawn: [] },
+    DMAX_LIGHT: { list: [], drawn: [] },
+    DMAX_HEAVY: { list: [], drawn: [] }
+};
 
-let dmaxList = [];
-let dmaxDrawn = [];
-
+let currentType = "SODI_LIGHT";
 let tempList = [];
-let currentType = "SODI";
 
-// TOGGLE MENU
+const sideInput = document.getElementById("sideInput");
+
+sideInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        addKart();
+    }
+});
+
 function toggleMenu() {
     document.getElementById("sideMenu").classList.toggle("open");
 }
 
-// SWITCH LIST TYPE
 function switchListType() {
     currentType = document.getElementById("listTypeSelect").value;
-    tempList = [];
+    tempList = [...kartLists[currentType].list];
     updateSideList();
 }
 
-// ADD NUMBER ON ENTER
-document.getElementById("sideInput").addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-        const value = this.value.trim();
-        if (value === "") return;
+function addKart() {
+    const value = sideInput.value.trim();
 
-        if (tempList.includes(value)) {
-            alert("Kart already added!");
-            return;
-        }
+    if (value === "") return;
 
-        tempList.push(value);
-        updateSideList();
-        this.value = "";
-        this.blur();
-    }
-});
+    tempList.push(value);
+    sideInput.value = "";
+    updateSideList();
+}
 
-// UPDATE SIDE LIST
 function updateSideList() {
-    const list = document.getElementById("sideList");
-    list.innerHTML = "";
+    const sideList = document.getElementById("sideList");
+    sideList.innerHTML = "";
 
-    tempList.forEach((num, index) => {
+    tempList.forEach((kart, index) => {
         const li = document.createElement("li");
-        li.textContent = num;
+        li.innerText = kart;
 
         li.onclick = () => {
             tempList.splice(index, 1);
             updateSideList();
         };
 
-        list.appendChild(li);
+        sideList.appendChild(li);
     });
 }
 
-// APPLY LIST
 function applyList() {
-    if (tempList.length === 0) {
-        alert("Add at least one kart.");
-        return;
-    }
-
-    if (currentType === "SODI") {
-        sodiList = [...tempList];
-        sodiDrawn = [];
-    } else {
-        dmaxList = [...tempList];
-        dmaxDrawn = [];
-    }
-
+    kartLists[currentType].list = [...tempList];
+    kartLists[currentType].drawn = [];
     updateDisplay();
     toggleMenu();
 }
 
-// DRAW
+function drawFromList(list, drawn) {
+    const randomIndex = Math.floor(Math.random() * list.length);
+    const drawnKart = list.splice(randomIndex, 1)[0];
+    drawn.push(drawnKart);
+    return drawnKart;
+}
+
 function generateRandomNumber(type) {
-    let list = type === "SODI" ? sodiList : dmaxList;
+    const list = kartLists[type].list;
+
     if (list.length === 0) {
-        alert(`No karts in ${type} list.`);
+        alert(`No karts in ${type}`);
         return;
     }
 
     animateDraw(type);
 }
 
-// ANIMATION
 function animateDraw(type) {
     const outputElement = document.getElementById("output");
-    let iterations = 0;
+    const list = kartLists[type].list;
+    const drawn = kartLists[type].drawn;
 
-    let list = type === "SODI" ? sodiList : dmaxList;
-    let drawn = type === "SODI" ? sodiDrawn : dmaxDrawn;
+    let iterations = 0;
 
     const interval = setInterval(() => {
         const temp = list[Math.floor(Math.random() * list.length)];
@@ -100,60 +92,46 @@ function animateDraw(type) {
 
         if (iterations >= 20) {
             clearInterval(interval);
+
             const final = drawFromList(list, drawn);
             outputElement.innerText = `Kart: ${final}`;
+
             updateDisplay();
         }
     }, 100);
 }
 
-// DRAW FROM LIST
-function drawFromList(list, drawnList) {
-    const index = Math.floor(Math.random() * list.length);
-    const number = list[index];
-
-    list.splice(index, 1);
-    drawnList.push(number);
-
-    return number;
-}
-
-// UPDATE DISPLAY
 function updateDisplay() {
     document.getElementById("listDisplay").innerText =
-        `List 1: ${sodiList.join(", ")} | List 2: ${dmaxList.join(", ")}`;
+        `SODI LW: ${kartLists.SODI_LIGHT.list.join(", ")}
+SODI HW: ${kartLists.SODI_HEAVY.list.join(", ")}
+DMAX LW: ${kartLists.DMAX_LIGHT.list.join(", ")}
+DMAX HW: ${kartLists.DMAX_HEAVY.list.join(", ")}`;
 
     document.getElementById("remainingCount").innerText =
-        `List 1 Remaining: ${sodiList.length} | List 2 Remaining: ${dmaxList.length}`;
+        `SODI LW: ${kartLists.SODI_LIGHT.list.length}
+SODI HW: ${kartLists.SODI_HEAVY.list.length}
+DMAX LW: ${kartLists.DMAX_LIGHT.list.length}
+DMAX HW: ${kartLists.DMAX_HEAVY.list.length}`;
 
     document.getElementById("drawnNumbers").innerText =
-        `List 1: ${sodiDrawn.join(", ")} | List 2: ${dmaxDrawn.join(", ")}`;
-
-    if (sodiList.length === 0 && dmaxList.length === 0) {
-        document.getElementById("remainingCount").innerText = "All karts drawn!";
-        document.getElementById("output").innerText = "Kart Number: None";
-    }
+        `SODI LW: ${kartLists.SODI_LIGHT.drawn.join(", ")}
+SODI HW: ${kartLists.SODI_HEAVY.drawn.join(", ")}
+DMAX LW: ${kartLists.DMAX_LIGHT.drawn.join(", ")}
+DMAX HW: ${kartLists.DMAX_HEAVY.drawn.join(", ")}`;
 }
 
-// CLEAR
 function clearAll() {
-    const password = prompt("Enter password to clear data:");
-
-    if (password === "Sandown2024") {
-        if (confirm("Are you sure?")) {
-            sodiList = [];
-            sodiDrawn = [];
-            dmaxList = [];
-            dmaxDrawn = [];
-            tempList = [];
-
-            document.getElementById("sideList").innerHTML = "";
-            document.getElementById("output").innerText = "Kart Number:";
-            document.getElementById("listDisplay").innerText = "Your List:";
-            document.getElementById("remainingCount").innerText = "Karts left to draw:";
-            document.getElementById("drawnNumbers").innerText = "";
-        }
-    } else {
-        alert("Incorrect password.");
+    for (const key in kartLists) {
+        kartLists[key].list = [];
+        kartLists[key].drawn = [];
     }
+
+    tempList = [];
+    updateSideList();
+    updateDisplay();
+
+    document.getElementById("output").innerText = "Kart Number:";
 }
+
+updateDisplay();

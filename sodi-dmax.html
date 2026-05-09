@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Daytona Kart Draw</title>
-
-    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -18,8 +17,10 @@
     <h2>Add Karts</h2>
 
     <select id="listTypeSelect" onchange="switchListType()">
-        <option value="SODI">SODI</option>
-        <option value="DMAX">DMAX</option>
+        <option value="SODI_LIGHT">SODI Lightweight</option>
+        <option value="SODI_HEAVY">SODI Heavyweight</option>
+        <option value="DMAX_LIGHT">DMAX Lightweight</option>
+        <option value="DMAX_HEAVY">DMAX Heavyweight</option>
     </select>
 
     <input type="text" id="sideInput" placeholder="Enter kart number">
@@ -39,8 +40,10 @@
 
 <br><br>
 
-<button id="drawSodiButton" onclick="generateRandomNumber('SODI')">Draw SODI</button>
-<button id="drawDmaxButton" onclick="generateRandomNumber('DMAX')">Draw DMAX</button>
+<button id="drawSodiLightButton" onclick="generateRandomNumber('SODI_LIGHT')">Draw SODI LW</button>
+<button id="drawSodiHeavyButton" onclick="generateRandomNumber('SODI_HEAVY')">Draw SODI HW</button>
+<button id="drawDmaxLightButton" onclick="generateRandomNumber('DMAX_LIGHT')">Draw DMAX LW</button>
+<button id="drawDmaxHeavyButton" onclick="generateRandomNumber('DMAX_HEAVY')">Draw DMAX HW</button>
 
 <br><br>
 
@@ -51,8 +54,7 @@
     Numbers Drawn So Far: <span id="drawnNumbers"></span>
 </div>
 
-<script src="script.js">
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
