@@ -1,137 +1,89 @@
-body {
+  .sideMenu{
+    height: 100%; 
+    width: 0;
+    position: fixed; 
+    z-index: 1; 
+    top: 0;
+    left: 0;
+    background-color: #111; 
+    overflow-x: hidden; 
+    padding-top: 60px;
+    transition: 0.5s;
+    white-space: normal;
+  }
+  .sideMenu * {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      color: black;
+      margin: 5px;
+  }
+  select {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      color: black;
+      margin: 5px;
+  }
+
+  body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    margin-top: 50px;
+    margin-top: 10;
     background-color: #333333;
     overflow-x: hidden;
     color: white;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
+  }
+  p{
+    font-size: 32px;
+    font-family: Arial, sans-serif;
+  }
+  #drawSodi {
+    padding: 18px 28px;
+    font-size: 22px;
+    background-color: rgb(0, 153, 255);
     color: white;
-    margin: 5px;
-}
-
-#drawSodiLightButton,
-#drawSodiHeavyButton {
+  }
+  #drawDMAX {
     padding: 18px 28px;
     font-size: 22px;
-    background-color: #007bff;
-}
-
-#drawDmaxLightButton,
-#drawDmaxHeavyButton {
+    background-color: red;
+    color: white;
+  }
+  #drawJR {
     padding: 18px 28px;
     font-size: 22px;
-    background-color: #e40521;
-}
-
-#output,
-#listDisplay,
-#remainingCount,
-#drawnNumbersContainer {
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    white-space: pre-line;
-}
-
-#listDisplay,
-#drawnNumbersContainer {
-    font-size: 18px;
-    font-weight: normal;
-}
-
-#drawnNumbersContainer {
-    border-top: 1px solid #ccc;
-    padding-top: 10px;
-    margin-top: 30px;
-}
-
-#logo {
+    background-color: yellow;
+    color: black;
+  }
+  #drawCadet {
+    padding: 18px 28px;
+    font-size: 22px;
+    background-color: pink;
+    color: black;
+  }
+  #logo {
     display: block;
-    margin: 0 auto;
+    margin: 20px auto;
     width: 35%;
 }
-
-#menuButton {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    font-size: 24px;
-    background: red;
-}
-
-/* SIDE MENU */
-#sideMenu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 300px;
-    height: 100%;
-    background: #222;
-    color: white;
-    padding: 20px;
-    overflow-y: auto;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-}
-
-#sideMenu.open {
-    transform: translateX(0);
-}
-
-#closeMenuButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    color: white;
-    font-size: 22px;
+  #selectionButton {
+    padding: 10px 20px;
+    width: 25%;
+    height: 25%;
+    font-size: 25px;
+    font-weight: bold;
+    cursor: pointer;
     border: none;
-    cursor: pointer;
-}
-
-#sideInput {
-    width: 90%;
-    padding: 10px;
-    font-size: 16px;
-    margin-top: 40px;
-}
-
-#sideList {
-    list-style: none;
-    padding: 0;
-    margin-top: 20px;
-}
-
-#sideList li {
-    padding: 8px;
-    border-bottom: 1px solid #555;
-    cursor: pointer;
-}
-
-#sideList li:hover {
-    background: #444;
-}
-
-#clearButton {
-    margin-top: 20px;
-}
-
-#listTypeSelect {
-    width: 95%;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-#sideMenu button {
-    background-color: #e40521;
+    margin: 5px;
     color: white;
+    background-color: red;
 }

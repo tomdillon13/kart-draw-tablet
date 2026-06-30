@@ -1,137 +1,96 @@
-const kartLists = {
-    SODI_LIGHT: { list: [], drawn: [] },
-    SODI_HEAVY: { list: [], drawn: [] },
-    DMAX_LIGHT: { list: [], drawn: [] },
-    DMAX_HEAVY: { list: [], drawn: [] }
-};
+  var SodiLW= [];
+  var DMAXLW = [];
+  var SodiHW = [];
+  var DMAXHW = [];
+  var SodiIW = [];
+  var DMAXIW = []
+  var Sodi = []
+  var DMAX = []
 
-let currentType = "SODI_LIGHT";
-let tempList = [];
+  var Junior = []
+  var Cadet = []
 
-const sideInput = document.getElementById("sideInput");
+  let arrays ={
+    Sodi: Sodi,
+    DMAX: DMAX,
 
-sideInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-        addKart();
-    }
-});
+    SodiLW: SodiLW,
+    DMAXLW: DMAXLW,
+    SodiHW: SodiHW,
+    DMAXHW: DMAXHW,
+    SodiIW: SodiIW,
+    DMAXIW: DMAXIW,
+    Junior: Junior,
+    Cadet: Cadet,
 
-function toggleMenu() {
-    document.getElementById("sideMenu").classList.toggle("open");
-}
+  }
 
-function switchListType() {
-    currentType = document.getElementById("listTypeSelect").value;
-    tempList = [...kartLists[currentType].list];
-    updateSideList();
-}
 
-function addKart() {
-    const value = sideInput.value.trim();
+  function drawKart(list) {
+      let selectedList = arrays[list];
 
-    if (value === "") return;
+      if (selectedList.length === 0) {
+          document.getElementById('draw').innerHTML = "All karts drawn";
+          return;
+      }
 
-    tempList.push(value);
-    sideInput.value = "";
-    updateSideList();
-}
+      const drawElement = document.getElementById('draw');
 
-function updateSideList() {
-    const sideList = document.getElementById("sideList");
-    sideList.innerHTML = "";
+      // Pick final selection
+      const randomIndex = Math.floor(Math.random() * selectedList.length);
+      const drawn = selectedList[randomIndex];
 
-    tempList.forEach((kart, index) => {
-        const li = document.createElement("li");
-        li.innerText = kart;
+      // Animation settings
+      let animationCount = 0;
+      const animationLength = 20; // number of cycles
+      const animationSpeed = 80; // milliseconds
 
-        li.onclick = () => {
-            tempList.splice(index, 1);
-            updateSideList();
-        };
+      const animation = setInterval(() => {
+          // Show random items while cycling
+          const randomPreview = selectedList[
+              Math.floor(Math.random() * selectedList.length)
+          ];
 
-        sideList.appendChild(li);
-    });
-}
+          drawElement.innerHTML = "Kart: " + randomPreview;
 
-function applyList() {
-    kartLists[currentType].list = [...tempList];
-    kartLists[currentType].drawn = [];
-    updateDisplay();
-    toggleMenu();
-}
+          animationCount++;
 
-function drawFromList(list, drawn) {
-    const randomIndex = Math.floor(Math.random() * list.length);
-    const drawnKart = list.splice(randomIndex, 1)[0];
-    drawn.push(drawnKart);
-    return drawnKart;
-}
+          // Stop animation and show final result
+          if (animationCount >= animationLength) {
+              clearInterval(animation);
 
-function generateRandomNumber(type) {
-    const list = kartLists[type].list;
+              drawElement.innerHTML = "Kart: "+ drawn;
 
-    if (list.length === 0) {
-        alert(`No karts in ${type}`);
-        return;
-    }
+              // Remove selected item after animation
+              selectedList.splice(randomIndex, 1);
 
-    animateDraw(type);
-}
+              console.log(selectedList);
+          }
 
-function animateDraw(type) {
-    const outputElement = document.getElementById("output");
-    const list = kartLists[type].list;
-    const drawn = kartLists[type].drawn;
+      }, animationSpeed);
+  }
 
-    let iterations = 0;
 
-    const interval = setInterval(() => {
-        const temp = list[Math.floor(Math.random() * list.length)];
-        outputElement.innerText = `Kart: ${temp}`;
-        iterations++;
+  function addKart(list){
+    selectedList = arrays[list]
+    var kart = document.getElementById("kartAdd").value;
+    selectedList.push(kart);
+    console.log(selectedList)
 
-        if (iterations >= 20) {
-            clearInterval(interval);
+    document.getElementById("listFeedback").innerHTML = "List: " + selectedList.toString();
 
-            const final = drawFromList(list, drawn);
-            outputElement.innerText = `Kart: ${final}`;
+  }
+  function removeKart(list){
+    selectedList = arrays[list]
+    selectedList.pop();
 
-            updateDisplay();
-        }
-    }, 100);
-}
+    document.getElementById("listFeedback").innerHTML = "List: " + selectedList.toString();
 
-function updateDisplay() {
-    document.getElementById("listDisplay").innerText =
-        `SODI LW: ${kartLists.SODI_LIGHT.list.join(", ")}
-SODI HW: ${kartLists.SODI_HEAVY.list.join(", ")}
-DMAX LW: ${kartLists.DMAX_LIGHT.list.join(", ")}
-DMAX HW: ${kartLists.DMAX_HEAVY.list.join(", ")}`;
+  }
 
-    document.getElementById("remainingCount").innerText =
-        `SODI LW: ${kartLists.SODI_LIGHT.list.length}
-SODI HW: ${kartLists.SODI_HEAVY.list.length}
-DMAX LW: ${kartLists.DMAX_LIGHT.list.length}
-DMAX HW: ${kartLists.DMAX_HEAVY.list.length}`;
-
-    document.getElementById("drawnNumbers").innerText =
-        `SODI LW: ${kartLists.SODI_LIGHT.drawn.join(", ")}
-SODI HW: ${kartLists.SODI_HEAVY.drawn.join(", ")}
-DMAX LW: ${kartLists.DMAX_LIGHT.drawn.join(", ")}
-DMAX HW: ${kartLists.DMAX_HEAVY.drawn.join(", ")}`;
-}
-
-function clearAll() {
-    for (const key in kartLists) {
-        kartLists[key].list = [];
-        kartLists[key].drawn = [];
-    }
-
-    tempList = [];
-    updateSideList();
-    updateDisplay();
-
-    document.getElementById("output").innerText = "Kart Number:";
-}
-
-updateDisplay();
+  function OpenMenu(){
+    document.getElementById("sideMenu").style.width="250px";
+  }
+  function CloseMenu(){
+    document.getElementById("sideMenu").style.width = "0px";
+  }
