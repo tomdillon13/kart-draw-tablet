@@ -1,13 +1,81 @@
-body {
+  .sideMenu{
+    height: 100%; 
+    width: 0;
+    position: fixed; 
+    z-index: 1; 
+    top: 0;
+    left: 0;
+    background-color: #111; 
+    overflow-x: hidden; 
+    padding-top: 60px;
+    transition: 0.5s;
+    white-space: normal;
+  }
+  .sideMenu * {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      color: black;
+      margin: 5px;
+  }
+  select {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      color: black;
+      margin: 5px;
+  }
+
+  body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    margin-top: 50px;
+    margin-top: 10;
     background-color: #333333;
     overflow-x: hidden;
     color: white;
+  }
+  p{
+    font-size: 32px;
+    font-family: Arial, sans-serif;
+  }
+  #drawSodi {
+    padding: 18px 28px;
+    font-size: 22px;
+    background-color: rgb(0, 153, 255);
+    color: white;
+  }
+  #drawDMAX {
+    padding: 18px 28px;
+    font-size: 22px;
+    background-color: red;
+    color: white;
+  }
+  #drawJR {
+    padding: 18px 28px;
+    font-size: 22px;
+    background-color: yellow;
+    color: black;
+  }
+  #drawCadet {
+    padding: 18px 28px;
+    font-size: 22px;
+    background-color: pink;
+    color: black;
+  }
+  #logo {
+    display: block;
+    margin: 20px auto;
+    width: 35%;
 }
-
-button {
+  #selectionButton {
     padding: 10px 20px;
     width: 25%;
     height: 25%;
@@ -19,10 +87,3 @@ button {
     color: white;
     background-color: red;
 }
-
-img{
-    width: 25%;
-    height: auto;
-}
-
-
